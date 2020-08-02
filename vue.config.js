@@ -1,6 +1,6 @@
 module.exports = {
   publicPath: "./",
-  outputDir: "front",
+  outputDir: "dist",
   pages: {
     consume: {
       entry: "src/pages/consume/main.js",
