@@ -24,7 +24,7 @@
 -->
 
 <template>
-  <div class='iframe-container' ref='iframeContent'>
+  <div class='iframe-container' ref='iframeContent' v-if="hasInit">
     <iframe
       ref='iframeEle'
       :src='pageUrlWidthVersion'
@@ -46,20 +46,19 @@ export default {
   data () {
     return {
       pageUrl: '',
-      iframeRouter: null
+      iframeRouter: null,
+      hasInit: false
     }
   },
   computed: {
     pageUrlWidthVersion: function () {
-      // console.log('this.pageUrl.split(".html").join(`.html`) = ', this.pageUrl.split('.html').join(`.html`))
+      // console.log('this.pageUrl.split(".html").join(`.html`) = ', this.pageUrl.split('.html').join(`.html`));
       return this.pageUrl.split('.html').join(`.html`)
     }
   },
   watch: {
     $route: {
       handler (to) {
-        // console.log('to = ', to)
-        // console.log('from = ', from)
         if (new RegExp(`/${this.name}(\\/.*)?$`).test(to.fullPath)) {
           var router = '#/' + to.fullPath.slice(this.name.length + 2) // 去掉 name + 前后两个斜线
           // console.log('iframe:' + to.name + ':' + router, to, from)
@@ -82,11 +81,16 @@ export default {
                 // if (showLoading) {
                 //   loading.close()
                 // }
+                console.log(win)
+                console.log(win.$vue)
                 try {
+
+                  
                   this.iframeRouter = win.$vue.$router
                   this.iframeRouter.beforeEach((to, from, next) => {
                     // console.log('---------', to, from)
                     var pageName = '/' + this.name
+                    console.log("to.query._toPage >>>>>>>>>> ", to.query._toPage);
                     if (to.query._toPage) {
                       var r = /&?_toPage=[^&]*&?/
                       pageName = '/' + to.query._toPage
@@ -100,6 +104,7 @@ export default {
                         })
                     } else {
                       next()
+                      console.log("pageName + to.fullPath >>>>>>>>>>>> ", pageName + to.fullPath);
                       this.$router
                         .replace({
                           path: pageName + to.fullPath
@@ -111,12 +116,13 @@ export default {
                   })
                 } catch (err) {
                   console.warn(
-                    `this iframe don't user v-router, so the url won't respond when iframe't url change`
+                    `this iframe don't user v-router, so the url won't respond when iframe's url change`
                   )
                 } // 捕获 没有使用 v-router 的子页抛出的错误，不做处理
               }
             })
           } else if (this.hasInit) {
+            console.log(to.meta.pageUrl + router)
             // 用于传递路由选项到 iframe 中
             var newPageUrl = to.meta.pageUrl + router
             if (this.pageUrl !== newPageUrl) {
@@ -146,6 +152,9 @@ export default {
       },
       immediate: true
     }
+  },
+  created() {
+    // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>", this.name)
   }
 }
 </script>

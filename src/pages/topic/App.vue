@@ -8,6 +8,17 @@
   </div>
 </template>
 
+<script>
+export default {
+  $route: {
+    immediate: true,
+    handler (to) {
+      console.log(to)
+    }
+  }
+}
+</script>
+
 <style lang="scss">
 #topic {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
