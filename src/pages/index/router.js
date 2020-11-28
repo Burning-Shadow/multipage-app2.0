@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
 
 Vue.use(Router)
 
@@ -18,8 +17,8 @@ export default new Router({
     {
       name: 'home',
       path: '/home',
-      component: Home,
-      alias: '/home.html',
+      alias: '/home/*',
+      component: () => import(/* webpackChunkName: "about" */ './views/Home.vue'),
       meta: {
         pageUrl: './home.html',
         title: 'Home Page',
